@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+
+    
+
+    
+    <title>面试详解 | Hibernation</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="keywords" content="" />
+    
+    <meta name="description" content="我的面试第一次抽象类应用在哪些方面平时会怎么去使用他 list和map的区别不说理论，在什么场景上会使用、或者案例  多线程java线程start和run的区别  start() 可以启动一个新线程，run()不能 start()不能被重复调用，run()可以 start()中的run代码可以不执行完就继续执行下面的代码，即进行了线程切换。直接调用run方法必须等待其代码全部执行完才能继续执行下面">
+<meta property="og:type" content="article">
+<meta property="og:title" content="面试详解">
+<meta property="og:url" content="https://hibernation0814.github.io/2022/08/12/%E9%9D%A2%E8%AF%95%E8%AF%A6%E8%A7%A3/index.html">
+<meta property="og:site_name" content="Hibernation">
+<meta property="og:description" content="我的面试第一次抽象类应用在哪些方面平时会怎么去使用他 list和map的区别不说理论，在什么场景上会使用、或者案例  多线程java线程start和run的区别  start() 可以启动一个新线程，run()不能 start()不能被重复调用，run()可以 start()中的run代码可以不执行完就继续执行下面的代码，即进行了线程切换。直接调用run方法必须等待其代码全部执行完才能继续执行下面">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://w.wallhaven.cc/full/j3/wallhaven-j3g7yy.jpg">
+<meta property="article:published_time" content="2022-08-12T00:13:03.000Z">
+<meta property="article:modified_time" content="2022-11-01T07:09:01.011Z">
+<meta property="article:author" content="小龙Hibernation">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://w.wallhaven.cc/full/j3/wallhaven-j3g7yy.jpg">
+    
+
+    
+        <link rel="alternate" href="/" title="Hibernation" type="application/atom+xml" />
+    
+
+    
+
+    
+<link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+
+    
+<link rel="stylesheet" href="/libs/titillium-web/styles.css">
+
+    
+<link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+<script src="/libs/jquery/3.5.0/jquery.min.js"></script>
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+
+    
+    
+        
+<link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+
+    
+    
+    
+    
+
+
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+<body>
+    <div id="wrap">
+        <header id="header">
+    <div id="header-outer" class="outer">
+        <div class="container">
+            <div class="container-inner">
+                <div id="header-title">
+                    <h1 class="logo-wrap">
+                        <a href="/" class="logo"></a>
+                    </h1>
+                    
+                </div>
+                <div id="header-inner" class="nav-container">
+                    <a id="main-nav-toggle" class="nav-icon fa fa-bars"></a>
+                    <div class="nav-container-inner">
+                        <ul id="main-nav">
+                            
+                                <li class="main-nav-list-item" >
+                                    <a class="main-nav-list-link" href="/">主页</a>
+                                </li>
+                            
+                                    
+                                
+                                <li class="main-nav-list-item" >
+                                    <a class="main-nav-list-link" href="/about/index.html">关于</a>
+                                </li>
+                            
+                        </ul>
+                        <nav id="sub-nav">
+                            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+</div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+        <div class="container">
+            <div class="main-body container-inner">
+                <div class="main-body-inner">
+                    <section id="main">
+                        <div class="main-body-header">
+    <h1 class="header">
+    
+    未分类
+    </h1>
+</div>
+
+                        <div class="main-body-content">
+                            <article id="post-面试详解" class="article article-single article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+        面试详解
+        </h1>
+    
+
+            </header>
+        
+        
+            <div class="article-meta">
+                
+  <div class="article-date">
+    <i class="fa fa-calendar"></i>
+    <a href="/2022/08/12/%E9%9D%A2%E8%AF%95%E8%AF%A6%E8%A7%A3/" class="article-date">
+       <time datetime="2022-08-12T00:13:03.000Z" itemprop="datePublished">2022-08-12</time>
+    </a>
+  </div>
+
+
+<div class="article-date">
+  <i class="fa fa-calendar-plus-o"></i>
+  <a href="/2022/08/12/%E9%9D%A2%E8%AF%95%E8%AF%A6%E8%A7%A3/" class="article-date">
+     <time datetime="2022-11-01T07:09:01.011Z" itemprop="dateModified">2022-11-01</time>
+  </a>
+</div>
+
+
+                
+
+                
+                
+
+                
+
+            </div>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+            
+
+            
+
+            
+
+            <h1 id><a href="#" class="headerlink" title></a></h1><h1 id="我的面试"><a href="#我的面试" class="headerlink" title="我的面试"></a>我的面试</h1><h2 id="第一次"><a href="#第一次" class="headerlink" title="第一次"></a>第一次</h2><h3 id="抽象类应用在哪些方面"><a href="#抽象类应用在哪些方面" class="headerlink" title="抽象类应用在哪些方面"></a>抽象类应用在哪些方面</h3><p>平时会怎么去使用他</p>
+<h3 id="list和map的区别"><a href="#list和map的区别" class="headerlink" title="list和map的区别"></a>list和map的区别</h3><p>不说理论，在什么场景上会使用、或者案例</p>
+<p><img src="https://hibernation0814-hexo.oss-cn-hangzhou.aliyuncs.com/img/53AE7BCCCF363A0920435B87DC0A9527.jpg" alt="img"></p>
+<h3 id="多线程"><a href="#多线程" class="headerlink" title="多线程"></a>多线程</h3><p><strong>java线程start和run的区别</strong></p>
+<ol>
+<li>start() 可以启动一个新线程，run()不能</li>
+<li>start()不能被重复调用，run()可以</li>
+<li>start()中的run代码可以不执行完就继续执行下面的代码，即进行了线程切换。直接调用run方法必须等待其代码全部执行完才能继续执行下面的代码。</li>
+<li>start() 实现了多线程，run()没有实现多线程。</li>
+</ol>
+<h3 id="死锁的规避或解决"><a href="#死锁的规避或解决" class="headerlink" title="死锁的规避或解决"></a>死锁的规避或解决</h3><h3 id="springboot的启动步骤"><a href="#springboot的启动步骤" class="headerlink" title="springboot的启动步骤"></a>springboot的启动步骤</h3><p>Application启动类中的**@SpringBootApplication** 注解和 <strong>SpringApplication.run</strong> 启动方法</p>
+<p>1、创建SpringApplication实例</p>
+<p>2、执行run方法</p>
+<h3 id="在springboot里加一个方法springboot做了一些什么东西"><a href="#在springboot里加一个方法springboot做了一些什么东西" class="headerlink" title="在springboot里加一个方法springboot做了一些什么东西"></a>在springboot里加一个方法springboot做了一些什么东西</h3><p>SpringApplication</p>
+<p>这个类主要做了以下四件事情：</p>
+<p>1、推断应用的类型是普通的项目还是Web项目</p>
+<p>2、查找并加载所有可用初始化器 ， 设置到initializers属性中</p>
+<p>3、找出所有的应用程序监听器，设置到listeners属性中</p>
+<p>4、推断并设置main方法的定义类，找到运行的主类</p>
+<h3 id="服务日志快速查询命令"><a href="#服务日志快速查询命令" class="headerlink" title="服务日志快速查询命令"></a>服务日志快速查询命令</h3><ol>
+<li>cat | grep 命令的使用（单个关键字查询日志）</li>
+<li>tail -f 命令的使用（实时显示）</li>
+</ol>
+<h2 id="华立科技"><a href="#华立科技" class="headerlink" title="华立科技"></a>华立科技</h2><p><strong>总结：(没去了解公司，他侧重点在前端。最后就是没去要微信)</strong></p>
+<h3 id="为什么离开上一家公司？（要注意一下，可能有问题）"><a href="#为什么离开上一家公司？（要注意一下，可能有问题）" class="headerlink" title="为什么离开上一家公司？（要注意一下，可能有问题）"></a>为什么离开上一家公司？（要注意一下，可能有问题）</h3><p>想寻找更大的发展平台，了解到贵公司在各方面都比较符合我对未来的职业规划，我想加入贵公司，寻求更好的发展。</p>
+<h3 id="js闭包"><a href="#js闭包" class="headerlink" title="js闭包"></a>js闭包</h3><h2 id="风石健康"><a href="#风石健康" class="headerlink" title="风石健康"></a>风石健康</h2><h3 id="yaml和properties"><a href="#yaml和properties" class="headerlink" title="yaml和properties"></a>yaml和properties</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">server.port=8081</span><br><span class="line"></span><br><span class="line">#yaml配置端口</span><br><span class="line">server:</span><br><span class="line">  port: 8081</span><br></pre></td></tr></table></figure>
+
+<h3 id="list和json的写法"><a href="#list和json的写法" class="headerlink" title="list和json的写法"></a>list和json的写法</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">&quot;data&quot; :[&#123; //对象中嵌套数组，数组是返回的数据，</span><br><span class="line">&quot;id&quot; : 1 ,</span><br><span class="line">&quot;name&quot; : &quot;xiaohong&quot;</span><br><span class="line">&#125;,&#123;</span><br><span class="line">&quot;id&quot; : 2,</span><br><span class="line">&quot;name&quot; : &quot;xiaoming&quot;</span><br><span class="line">&#125;]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="蜂电科技"><a href="#蜂电科技" class="headerlink" title="蜂电科技"></a>蜂电科技</h2><p>重点是项目，不够了解项目，支付功能经常被问啊,</p>
+<p>支付后的开票功能，</p>
+<h3 id="微信小程序调用支付通道的手续费"><a href="#微信小程序调用支付通道的手续费" class="headerlink" title="微信小程序调用支付通道的手续费"></a>微信小程序调用支付通道的手续费</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">微信小程序只能对接的是微信支付（无法对接支付宝），一般常见的手续费是千分之2～千分之6</span><br><span class="line"></span><br><span class="line">自己去申请微信支付只能申请到千分之6，我们作为支付服务商可以申请最低千分之2的费率</span><br><span class="line"></span><br><span class="line">只有学校/公益等等行业可以申请到0费率</span><br><span class="line"></span><br><span class="line">凡是使用了微信支付通道来收款的应用，无论是网站，app，还是小程序； 都会收取一个手续费</span><br><span class="line"></span><br><span class="line">——————————————————————————————————————————</span><br><span class="line"></span><br><span class="line">假如你的费率是千6，小程序里面收款了1000元，微信支付官方立即扣除6元的手续费</span><br><span class="line"></span><br><span class="line">自己实际到账的是994元，994元就可以提现出去绑定的银行卡了，不会再收取其他的手续</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="mqtt协议"><a href="#mqtt协议" class="headerlink" title="mqtt协议"></a>mqtt协议</h3><h3 id="微信小程序调用支付宝的支付接口"><a href="#微信小程序调用支付宝的支付接口" class="headerlink" title="微信小程序调用支付宝的支付接口"></a>微信小程序调用支付宝的支付接口</h3><p>查询资料发现，大多数的答案是：微信与支付宝属于互相竞争的关系，是两个不同的支付平台，目前是不支持互相通用的。微信小程序里面的程序软件属于内嵌于微信的服务，支持微信支付，但不能使用支付宝支付。也就是说：<br>①在小程序中生成支付宝二维码的方式，不可行<br>②在小程序中内嵌H5网页后调用支付宝支付接口，也不可行，由于支付协议<br>那么我通过诱导的方式直接在浏览器使用支付呢？也就是：<br>③通过点击某个链接直接跳出小程序自动跳转到系统浏览器的方式，也不可行，原因：<br>微信小程序没办法直接跳转打开app、网址、手机浏览器，但是可以直接打开其他的小程序并跳转到指定的小程序页面<br>微信公众号可以直接打开app或app指定页面，可以直接打开手机浏览器并跳转指定网址，可以打开小程序或进入小程序指定页面。<br>但是，我就是想通过某种方式实现小程序通过支付宝支付呢？（嗯 其实也不是我轴了 公司要求）哪怕是曲里拐弯儿的方式，所以：<br>④<strong>通过诱导的方式在小程序中生成你需要在浏览器中打开使用支付页面的链接地址，诱导用户手动复制网址并手动切换到系统浏览器中使用</strong>。我自己的这个链接有公司小程序接口的前提下弄的，比如说<a target="_blank" rel="noopener" href="http://xxxx.com/xxxx.aspx?%E5%8F%82%E6%95%B0=xxxx%EF%BC%8C%E5%A4%8D%E5%88%B6%E8%BF%99%E4%B8%AA%E9%93%BE%E6%8E%A5%E5%88%B0%E6%B5%8F%E8%A7%88%E5%99%A8%E6%89%93%E5%BC%80%E6%98%AF%E4%B8%80%E4%B8%AA%E4%BF%A1%E6%81%AF%E5%B1%95%E7%A4%BA%E7%9A%84%E9%A1%B5%E9%9D%A2%EF%BC%8C%E5%9C%A8%E8%BF%99%E4%B8%AA%E9%A1%B5%E9%9D%A2%E4%B8%8A%E6%9C%89%E4%B8%80%E4%B8%AA%E6%8C%89%E9%92%AE%EF%BC%8C%E9%80%9A%E8%BF%87%E8%BF%99%E4%B8%AA%E6%8C%89%E9%92%AE%E5%86%8D%E5%8E%BB%E8%AF%B7%E6%B1%82%E6%94%AF%E4%BB%98%E5%AE%9D%E6%94%AF%E4%BB%98%E7%9A%84%E6%8E%A5%E5%8F%A3%E3%80%82%E7%B1%BB%E4%BC%BC%E4%BA%8E%E5%A6%82%E5%9B%BE%EF%BC%9A%EF%BC%89">http://xxxx.com/xxxx.aspx?参数=xxxx，复制这个链接到浏览器打开是一个信息展示的页面，在这个页面上有一个按钮，通过这个按钮再去请求支付宝支付的接口。类似于如图：）</a><br><img src="https://img-blog.csdnimg.cn/2019121915290132.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzU1NDIyOA==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_43554228/article/details/103453578?ops_request_misc=&request_id=&biz_id=102&utm_term=%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E8%B0%83%E7%94%A8%E6%94%AF%E4%BB%98%E5%AE%9D%E7%9A%84%E6%94%AF%E4%BB%98%E6%8E%A5%E5%8F%A3&utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduweb~default-0-103453578.142%5Ev44%5Epc_rank_34_default_23&spm=1018.2226.3001.4187">https://blog.csdn.net/weixin_43554228&#x2F;article&#x2F;details&#x2F;103453578?ops_request_misc&#x3D;&amp;request_id&#x3D;&amp;biz_id&#x3D;102&amp;utm_term&#x3D;%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E8%B0%83%E7%94%A8%E6%94%AF%E4%BB%98%E5%AE%9D%E7%9A%84%E6%94%AF%E4%BB%98%E6%8E%A5%E5%8F%A3&amp;utm_medium&#x3D;distribute.pc_search_result.none-task-blog-2<del>all</del>sobaiduweb~default-0-103453578.142^v44^pc_rank_34_default_23&amp;spm&#x3D;1018.2226.3001.4187</a></p>
+<h2 id="四方精创"><a href="#四方精创" class="headerlink" title="四方精创"></a>四方精创</h2><h3 id="mysql函数截取字符串"><a href="#mysql函数截取字符串" class="headerlink" title="mysql函数截取字符串"></a>mysql函数截取字符串</h3><h3 id="创建线程有哪几种方式"><a href="#创建线程有哪几种方式" class="headerlink" title="创建线程有哪几种方式"></a>创建线程有哪几种方式</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">一、继承Thread类创建线程类</span><br><span class="line">（1）定义Thread类的子类，并重写该类的run方法，该run方法的方法体就代表了线程要完成的任务。因此把run()方法称为执行体。</span><br><span class="line">（2）创建Thread子类的实例，即创建了线程对象。</span><br><span class="line">（3）调用线程对象的start()方法来启动该线程。</span><br><span class="line">二、通过Runnable接口创建线程类</span><br><span class="line">（1）定义runnable接口的实现类，并重写该接口的run()方法，该run()方法的方法体同样是该线程的线程执行体。</span><br><span class="line">（2）创建 Runnable实现类的实例，并依此实例作为Thread的target来创建Thread对象，该Thread对象才是真正的线程对象。</span><br><span class="line">（3）调用线程对象的start()方法来启动该线程。</span><br><span class="line">三、通过Callable和Future创建线程</span><br><span class="line">（1）创建Callable接口的实现类，并实现call()方法，该call()方法将作为线程执行体，并且有返回值。</span><br><span class="line">（2）创建Callable实现类的实例，使用FutureTask类来包装Callable对象，该FutureTask对象封装了该Callable对象的call()方法的返回值。</span><br><span class="line">（3）使用FutureTask对象作为Thread对象的target创建并启动新线程。</span><br><span class="line">（4）调用FutureTask对象的get()方法来获得子线程执行结束后的返回值</span><br></pre></td></tr></table></figure>
+
+<h3 id="SQL去重"><a href="#SQL去重" class="headerlink" title="SQL去重"></a>SQL去重</h3><p><strong>distinct</strong>去重</p>
+<p><strong>group by</strong>去重</p>
+<p>row_number() over (parttion by 分组列 order by 排序列)</p>
+<h3 id="SQL数据排序"><a href="#SQL数据排序" class="headerlink" title="SQL数据排序"></a>SQL数据排序</h3><h3 id="Mysql内连接和外连接的区别"><a href="#Mysql内连接和外连接的区别" class="headerlink" title="Mysql内连接和外连接的区别"></a>Mysql内连接和外连接的区别</h3><ol>
+<li><h4 id="MySQL中的外连接和内连接"><a href="#MySQL中的外连接和内连接" class="headerlink" title="MySQL中的外连接和内连接"></a>MySQL中的外连接和内连接</h4></li>
+<li><p><strong>内连接</strong></p>
+</li>
+<li><p>&#96;&#96;&#96;<br>内连接：指连接结果仅包含符合连接条件的行，参与连接的两个表都应该符合连接条件。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">4. **外连接**</span><br><span class="line"></span><br><span class="line">5. ```</span><br><span class="line">   外连接：连接结果不仅包含符合连接条件的行同时也包含自身不符合条件的行。包括左外连接、右外连接和全外连接。</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>左（外）连接 left join<ul>
+<li>左表的记录将会全部表示出来，而右表只会显示符合搜索条件的记录。</li>
+</ul>
+</li>
+<li>右（外）连接 right join<ul>
+<li>右表的记录将会全部表示出来，而左表只会显示符合搜索条件的记录。</li>
+</ul>
+</li>
+</ol>
+</li>
+</ol>
+<h3 id="MySQL的基础架构"><a href="#MySQL的基础架构" class="headerlink" title="MySQL的基础架构"></a>MySQL的基础架构</h3><h2 id="得淼"><a href="#得淼" class="headerlink" title="得淼"></a>得淼</h2><p>是否熟悉表结构的设计</p>
+<h3 id="秒杀"><a href="#秒杀" class="headerlink" title="秒杀"></a>秒杀</h3><p>特点：<strong>时间极短</strong>、 <strong>瞬间用户量大</strong>。</p>
+<p>问题：</p>
+<ul>
+<li><p><strong>缓存雪崩</strong>，<strong>缓存击穿</strong>，<strong>缓存穿透</strong></p>
+</li>
+<li><p><strong>超卖</strong></p>
+</li>
+<li><p><strong>恶意请求</strong></p>
+</li>
+<li><p><strong>链接暴露</strong></p>
+</li>
+<li><h5 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h5></li>
+</ul>
+<h5 id="简单说个解决办法："><a href="#简单说个解决办法：" class="headerlink" title="简单说个解决办法："></a>简单说个解决办法：</h5><p><strong>限流：</strong></p>
+<p>限流这里我觉得应该分为<strong>前端限流</strong>和<strong>后端限流</strong>。</p>
+<p><strong>前端：</strong>一般都是点击一下或者两下然后几秒之后才可以继续点击</p>
+<p><strong>后端：</strong>产品卖光了，return了一个false，前端直接秒杀结束</p>
+<p>阿里的Sentinel</p>
+<h5 id="Redis"><a href="#Redis" class="headerlink" title="Redis"></a><strong>Redis</strong></h5><p><strong>提前把商品的库存加载到Redis中</strong>，让整个流程都在Redis里面去做，然后等秒杀结束了，再异步的去修改库存就好了。</p>
+<h2 id="联物"><a href="#联物" class="headerlink" title="联物"></a>联物</h2><h3 id="项目是否上线"><a href="#项目是否上线" class="headerlink" title="项目是否上线"></a>项目是否上线</h3><p>纯后台就说上线了，已经在使用</p>
+<h3 id="HTTP-8种请求类型"><a href="#HTTP-8种请求类型" class="headerlink" title="HTTP-8种请求类型"></a>HTTP-8种请求类型</h3><p><strong>GET请求</strong></p>
+<p><strong>POST请求</strong></p>
+<p><strong>PUT请求</strong></p>
+<p><strong>DELETE请求</strong></p>
+<p><strong>trace请求</strong></p>
+<p><strong>head请求</strong></p>
+<p><strong>options</strong></p>
+<p><strong>connect</strong></p>
+<h3 id="vue标签"><a href="#vue标签" class="headerlink" title="vue标签"></a>vue标签</h3><ol>
+<li><h3 id="v-for"><a href="#v-for" class="headerlink" title="v-for"></a>v-for</h3></li>
+<li><h3 id="v-on"><a href="#v-on" class="headerlink" title="v-on"></a>v-on</h3></li>
+<li><h3 id="v-if"><a href="#v-if" class="headerlink" title="v-if"></a>v-if</h3></li>
+<li><h3 id="v-show"><a href="#v-show" class="headerlink" title="v-show"></a>v-show</h3></li>
+</ol>
+<h2 id="9-8线上"><a href="#9-8线上" class="headerlink" title="9.8线上"></a>9.8线上</h2><h3 id="JDK和JRE的区别"><a href="#JDK和JRE的区别" class="headerlink" title="JDK和JRE的区别"></a>JDK和JRE的区别</h3><p>JDK全称为Java Development Kit，顾名思义是java开发工具包，是程序员使用java语言编写java程序所需的开发工具包。</p>
+<p>JRE全称为Java Runtime <a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=Environment&spm=1001.2101.3001.7020">Environment</a>，顾名思义是java运行时的环境，包含了java虚拟机，java基础类库，是使用java语言编写的程序运行所需要的软件环境。</p>
+<h3 id="bean注解的使用方法"><a href="#bean注解的使用方法" class="headerlink" title="bean注解的使用方法"></a>bean注解的使用方法</h3><h3 id="数组有没有length-方法？String有没有length-）方法？"><a href="#数组有没有length-方法？String有没有length-）方法？" class="headerlink" title="数组有没有length()方法？String有没有length(）方法？"></a>数组有没有length()方法？String有没有length(）方法？</h3><p><a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=%E6%95%B0%E7%BB%84&spm=1001.2101.3001.7020">数组</a>是没有length（）这个方法的，有length这个属性，可以计算数组的长度</p>
+<p>String是有length（）这个方法的，用来计算<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=%E5%AD%97%E7%AC%A6%E4%B8%B2&spm=1001.2101.3001.7020">字符串</a>的长度。</p>
+<h2 id="神州灵云"><a href="#神州灵云" class="headerlink" title="神州灵云"></a>神州灵云</h2><h3 id="list的写法"><a href="#list的写法" class="headerlink" title="list的写法"></a>list的写法</h3><p>[{name&#x3D;jim,age&#x3D;23},{……}]</p>
+<h3 id="hashmap底层结构"><a href="#hashmap底层结构" class="headerlink" title="hashmap底层结构"></a>hashmap底层结构</h3><h3 id="为什么两个String类型的数据，它们的hashcode-相同，但是-x3D-x3D-的结果为false"><a href="#为什么两个String类型的数据，它们的hashcode-相同，但是-x3D-x3D-的结果为false" class="headerlink" title="为什么两个String类型的数据，它们的hashcode()相同，但是&#x3D;&#x3D;的结果为false"></a>为什么两个String类型的数据，它们的hashcode()相同，但是&#x3D;&#x3D;的结果为false</h3><p>String重写了hashcode()方法，<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=String%E7%B1%BB&spm=1001.2101.3001.7020">String类</a>型的<strong>hash值是根据字符串的内容来决定的</strong>，并不是内存地址，只要两个String类型的字符串内容一致，那么两者的hashcode就相同。</p>
+<h3 id="数组和集合的区别"><a href="#数组和集合的区别" class="headerlink" title="数组和集合的区别"></a>数组和集合的区别</h3><p>一、数组声明了类型，集合不会</p>
+<p>二、数组静态，大小不可变。集合可以动态扩展</p>
+<p>三、数组存放的类型只能一种，</p>
+<h1 id="——————————————————————"><a href="#——————————————————————" class="headerlink" title="——————————————————————"></a>——————————————————————</h1><h4 id="ArrayList和LinkedList的区别？"><a href="#ArrayList和LinkedList的区别？" class="headerlink" title="ArrayList和LinkedList的区别？"></a>ArrayList和LinkedList的区别？</h4><table>
+<thead>
+<tr>
+<th></th>
+<th>优点</th>
+<th>缺点</th>
+<th>适用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ArrayList（数组）</td>
+<td>读取数据快</td>
+<td>数据复杂，删除成本大，需要重新排序</td>
+<td>不随机访问数据时适用</td>
+</tr>
+<tr>
+<td>LinkedList（链表）</td>
+<td>插入，添加，删除效率高，因为不需要更新索引</td>
+<td>内存需求大</td>
+<td>更多插入和删除，更少读取数据</td>
+</tr>
+</tbody></table>
+<h4 id="重写和重载的区别？"><a href="#重写和重载的区别？" class="headerlink" title="重写和重载的区别？"></a>重写和重载的区别？</h4><p><strong>概念</strong></p>
+<p>重写通常来说就是覆盖，重新对虚函数度重新编写</p>
+<p>重载指的是不用的函数用相同的函数名，参数，个数，类型不同</p>
+<p><strong>类的属关系上来看</strong></p>
+<p>重写：垂直关系，只发生在父类与子类之间的关系</p>
+<p>重载：平面关系，在同一个类之间的关系</p>
+<h4 id="int和Integer的区别"><a href="#int和Integer的区别" class="headerlink" title="int和Integer的区别"></a>int和Integer的区别</h4><p>int是普通类型	Integer是封装类</p>
+<p>int初始值是0	Integer初始值是null</p>
+<p>int直接存储数据	Integer需要实例化对象，指向对象地址</p>
+<h4 id="String-StringBuffer-StringBuilder区别"><a href="#String-StringBuffer-StringBuilder区别" class="headerlink" title="String,StringBuffer,StringBuilder区别?"></a>String,StringBuffer,StringBuilder区别?</h4><table>
+<thead>
+<tr>
+<th>项</th>
+<th>String</th>
+<th>StringBuffer</th>
+<th>StringBuilder</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>可变性</td>
+<td>不可变。原因：value数组是final类型。因为不可变，所以每次操作生成新对象。</td>
+<td>可变。原因：其父类（AbstractStringBuilder）的value数组不是final类型</td>
+<td>可变。原因：其父类（AbstractStringBuilder）的value数组不是final类型</td>
+</tr>
+<tr>
+<td>线程安全性</td>
+<td>线程安全。原因：value数组是final类型</td>
+<td>原因：其父类（AbstractStringBuilder）的value数组不是final类型线程安全。原因：方法都用了synchronized</td>
+<td>线程不安全</td>
+</tr>
+</tbody></table>
+<h4 id="static的5种用法"><a href="#static的5种用法" class="headerlink" title="static的5种用法"></a>static的5种用法</h4><ol>
+<li>修饰成员属性</li>
+<li>修饰成员方法</li>
+<li>修饰代码块</li>
+<li>修饰内部类</li>
+<li>静态导包</li>
+</ol>
+<h4 id="JDK1-8-新特性"><a href="#JDK1-8-新特性" class="headerlink" title="JDK1.8 新特性"></a>JDK1.8 新特性</h4><ul>
+<li><strong>Lambda表达式</strong></li>
+<li><strong>函数式接口</strong></li>
+<li>*<strong>方法引用和构造器调用</strong></li>
+<li><strong>Stream API</strong></li>
+<li><strong>接口中的默认方法和静态方法</strong></li>
+<li><strong>新时间日期API</strong></li>
+</ul>
+<h4 id="HashMap、TreeMap、LinkedHashMap之间的区别"><a href="#HashMap、TreeMap、LinkedHashMap之间的区别" class="headerlink" title="HashMap、TreeMap、LinkedHashMap之间的区别?"></a>HashMap、<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=TreeMap&spm=1001.2101.3001.7020">TreeMap</a>、LinkedHashMap之间的区别?</h4><p><strong>相同点</strong></p>
+<ul>
+<li>都属于Map；<ul>
+<li>Map 主要用于存储键(key)值(value)对，根据键得到值，因此键不允许键重复，但允许值重复。</li>
+</ul>
+</li>
+<li>都是线程不安全的</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><strong>HashMap</strong></th>
+<th><em>TreeMap</em></th>
+<th>LinkedHashMap</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>按插入顺序存放</strong></td>
+<td>不支持</td>
+<td>不支持。</td>
+<td><strong>支持。</strong>遍历时，按插入的顺序出结果。</td>
+</tr>
+<tr>
+<td><strong>按key排序</strong></td>
+<td>不支持。按照hashCode进行输出。</td>
+<td><strong>支持</strong>。默认按key升序排序。可用Comparator自定义排序。用Iterator 遍历TreeMap时，结果是排过序的。</td>
+<td>不支持。</td>
+</tr>
+<tr>
+<td><strong>数据结构</strong></td>
+<td>数组 + 链表 + 红黑树（put和get操作，基本可以达到常数时间的性能）</td>
+<td>红黑树。（get或put操作的时间复杂度是O(log(n))）</td>
+<td>HashMap + 双向链表此类是HashMap的子类。</td>
+</tr>
+<tr>
+<td><strong>null</strong></td>
+<td>只允许一条记录的key值为Null(多条会覆盖)；允许多条记录的Value为 Null。</td>
+<td>不允许key的值为null</td>
+<td>key和value均允许为null</td>
+</tr>
+</tbody></table>
+<h5 id="HashMap和Hashtable的区别-绝对经典"><a href="#HashMap和Hashtable的区别-绝对经典" class="headerlink" title="HashMap和Hashtable的区别(绝对经典)"></a>HashMap和Hashtable的区别(绝对经典)</h5><p><strong>相同点</strong></p>
+<p>都实现了map，Cloneable（可克隆），Serializable（可序列化）三个接口</p>
+<p><strong>不同点</strong></p>
+<ol>
+<li>底层数据结构不同，jdk1.7都是数组加链表，1.8HashMap加入了红黑树</li>
+<li>Hashtable不允许键值为空，HashMap允许一条</li>
+<li>实现方式不同：Hashtable 继承的是 Dictionary类，而 HashMap 继承的是 AbstractMap 类。</li>
+</ol>
+<h4 id="单例模式有八种方式："><a href="#单例模式有八种方式：" class="headerlink" title="单例模式有八种方式："></a>单例模式有八种方式：</h4><ol>
+<li>饿汉式(静态常量)</li>
+<li>饿汉式（静态代码块）</li>
+<li>懒汉式(线程不安全)</li>
+<li>懒汉式(线程安全，同步方法)</li>
+<li>懒汉式(线程安全，同步代码块)</li>
+<li>双重检查</li>
+<li>静态内部类</li>
+<li>枚举</li>
+</ol>
+<h4 id="什么是值传递-什么是引用传递"><a href="#什么是值传递-什么是引用传递" class="headerlink" title="什么是值传递?什么是引用传递?"></a>什么是值传递?什么是引用传递?</h4><p>值传递：传变量的值，不会改变方法外变量的值</p>
+<p>引用传递：传的对象地址，会改变对象本身的值</p>
+<h4 id="java性能优化"><a href="#java性能优化" class="headerlink" title="java性能优化"></a>java性能优化</h4><ol>
+<li>尽量指定类、方法的final修饰符</li>
+<li>代码尽量重用</li>
+<li>及时关闭流</li>
+<li>尽量使用局部变量</li>
+<li>减少对变量的重复计算</li>
+<li>不要再循环中使用try</li>
+<li>尽量采用懒加载的策略</li>
+</ol>
+<h4 id="java反射"><a href="#java反射" class="headerlink" title="java反射"></a>java反射</h4><p>作用：增加代码灵活性，避免程序死在代码里</p>
+<p>优点：</p>
+<ol>
+<li>提高了代码的灵活性和扩展性</li>
+<li>代码简洁，提高代码的复用性，外部调用方便</li>
+</ol>
+<p>缺点：性能问题、使用反射会模糊程序内部逻辑，安全限制，内部暴露</p>
+<h4 id="线程池的原理"><a href="#线程池的原理" class="headerlink" title="线程池的原理"></a>线程池的原理</h4><ol>
+<li><p>提交任务，线程池会根据corePoolSize大小创建若干数量线程执行任务</p>
+</li>
+<li><p>超过corePoolSize数量，后续任务阻塞队列，阻塞排队</p>
+</li>
+<li><p>阻塞队列也满了之后，创建额外线程，执行任务，超过额外时间，销毁额外线程</p>
+</li>
+<li><p>线程池满了，拒绝策略</p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1gkl2qg1iczj31cy0kcad1.jpg"></p>
+</li>
+</ol>
+<h4 id="线程七大核心参数"><a href="#线程七大核心参数" class="headerlink" title="线程七大核心参数"></a>线程七大核心参数</h4><blockquote>
+<p>corePoolSize：线程池中常驻核心线程数</p>
+<p>maximumPoolSize：线程池能够容纳同时执行的最大线程数，此值必须大于1</p>
+<p>keepAliveTime：多余空闲线程的存活时间。当前线程池数量超过corePoolSize时，当空闲时间达到keepAliveTime时，多余空闲线程会被销毁直到剩下corePoolSize为止。</p>
+<p>unit：keepAliveTime的单位</p>
+<p>workQueue：里面放了被提交但是尚未执行的任务</p>
+<p>threadFactory：表示线程池中工作线程的线程工厂，用于创建线程</p>
+<p>handler：拒绝策略，当队列满了并且工作线程大于等于线程池的最大线程数（maximumPoolSize）时，对任务的拒绝方式。</p>
+</blockquote>
+<p>原文链接：<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_50652600/article/details/121212661">https://blog.csdn.net/qq_50652600/article/details/121212661</a></p>
+<h4 id="tomcat7和tomcat8的区别"><a href="#tomcat7和tomcat8的区别" class="headerlink" title="tomcat7和tomcat8的区别"></a>tomcat7和tomcat8的区别</h4><p>配置文件：tomcat8更贴心，给出明确的启动提示输出</p>
+<p>请求的响应状态值：8——success，7——ok</p>
+<p><strong>性能方面：</strong></p>
+<p>tomcat8的吞吐量和响应时间均优于tomcat7</p>
+<h1 id="MySQL"><a href="#MySQL" class="headerlink" title="MySQL"></a>MySQL</h1><h4 id="设计数据库的三大范式？"><a href="#设计数据库的三大范式？" class="headerlink" title="设计数据库的三大范式？"></a>设计数据库的三大范式？</h4><p>通俗解释</p>
+<ol>
+<li>字段不可分</li>
+<li>非主键字段依赖主键</li>
+<li>非主键字段不能相互依赖</li>
+</ol>
+<h4 id="truncate和drop以及delete的区别"><a href="#truncate和drop以及delete的区别" class="headerlink" title="truncate和drop以及delete的区别"></a>truncate和drop以及delete的区别</h4><p>truncate：删除表内容，不删除表结构，释放空间</p>
+<p>drop：删除数据库</p>
+<p>delete：删除表内容，不删除表结构，不释放空间</p>
+<h4 id="数据库优化经验"><a href="#数据库优化经验" class="headerlink" title="数据库优化经验"></a>数据库优化经验</h4><ol>
+<li><p>从jdbc来说用PreparedStatement 一般来说比Statement性能高</p>
+</li>
+<li><p>外键会影响插入和删除的性能</p>
+</li>
+<li><p>表中允许适当的冗余，适度非凡三大范式，来获得更好的性能</p>
+</li>
+<li><p>sql语句全部大写，增强数据库编译效率</p>
+</li>
+<li><p>索引会增强查询性能</p>
+</li>
+<li><p>选择有效率的表名顺序</p>
+</li>
+<li><p>SELECT避免使用*</p>
+</li>
+</ol>
+<h4 id="什么是事务？事务特性？有哪些隔离级别？"><a href="#什么是事务？事务特性？有哪些隔离级别？" class="headerlink" title="什么是事务？事务特性？有哪些隔离级别？"></a>什么是事务？事务特性？有哪些隔离级别？</h4><p>事务（transaction）：是数据库操作的最小工作单位，是单个逻辑工作单元执行的一系列操作</p>
+<p>属性（ACID）：</p>
+<ol>
+<li><strong>一致性</strong>，事务中的诸多操作，<strong>要么都做，要么都不做</strong></li>
+<li><strong>原子性</strong>，使数据库从一个一致性状态到另一个一致性状态</li>
+<li><strong>隔离性</strong>，一个事务内部的操作及使用的数据对并发的其他事务是隔离的，并发执行的各个事务之间不能互相干扰</li>
+<li><strong>持久性</strong>，这个事务一旦提交，数据库中数据的改变应该是永久性的</li>
+</ol>
+<p>隔离级别分为：Read Uncommitted(读未提交)、Read Committed(读提交)、Repeatable Read(可以重复读)、Serializable(序列化)这4种级别</p>
+<h4 id="索引的好处？"><a href="#索引的好处？" class="headerlink" title="索引的好处？"></a>索引的好处？</h4><p><strong>索引是数据库表中一列或多列的值进行排序的一种结构，使用索引可以快速访问数据库表中特定的数据</strong></p>
+<p>大大提高了系统性能</p>
+<ol>
+<li>加快了检索速度</li>
+<li>通过创建唯一索引，保证数据库每一行数据的唯一性</li>
+<li>加速表连接</li>
+<li>减少分组排序时间</li>
+</ol>
+<h4 id="内外连接的区别"><a href="#内外连接的区别" class="headerlink" title="内外连接的区别"></a>内外连接的区别</h4><p>内：两个表的交集</p>
+<p>外：两个表的交集+主表中不符合连接条件只符合查询条件的数据行</p>
+<h4 id="什么是存储过程？"><a href="#什么是存储过程？" class="headerlink" title="什么是存储过程？"></a>什么是存储过程？</h4><p>存储过程是为了完成特定功能的<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=SQL%E8%AF%AD%E5%8F%A5&spm=1001.2101.3001.7020">SQL语句</a>集合，存储在数据库中，用户通过指定存储过程的名称并给出参数来执行。</p>
+<h4 id="mvcc是什么？"><a href="#mvcc是什么？" class="headerlink" title="mvcc是什么？"></a>mvcc是什么？</h4><p>它是MySQL中的提高性能的一种方式，<strong>配合Undo log 和版本链，替代锁</strong>，让不同事物的读-写、写-读操作可以<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=%E5%B9%B6%E5%8F%91&spm=1001.2101.3001.7020">并发</a>的执行，从而提升系统的性能。</p>
+<p>MVCC 在 MySQL InnoDB 中的实现主要是为了提高数据库并发性能。一般是在使用<strong>读已提交</strong>（PEAD COMMITTED）和<strong>可重复读</strong>（REPEATABLE READ）隔离级别的事务中实现。</p>
+<p><strong>MVCC的优点：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">MVCC在MySQL InnoDB中的实现主要是为了提高数据库的并发性能，用更好的方式去处理读-写或写-读之间的冲突，也能做到不加锁，非阻塞并发读，提高了数据库并发读写的性能。</span><br><span class="line">MVCC还可以解决脏读，幻读，不可重复读等事务隔离问题。但它还不能解决更新丢失的问题。</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="Mybatis"><a href="#Mybatis" class="headerlink" title="Mybatis"></a>Mybatis</h1><h4 id="Mybatis和Mybatis-plus区别"><a href="#Mybatis和Mybatis-plus区别" class="headerlink" title="Mybatis和Mybatis plus区别"></a>Mybatis和Mybatis plus区别</h4><p>mybatis：</p>
+<ol>
+<li>sql全部自己写</li>
+<li>手动解析实体关系映射转换为mybatis内部对象注入容器</li>
+<li>不支持lambda形式调用</li>
+</ol>
+<p>mybatis plus：</p>
+<ol>
+<li>有强大的条件构造器</li>
+<li>内置Mapper，通用的Service，少量配置即可实现大量的curd操作</li>
+<li>支持lambda形式调用</li>
+<li>自动解析实体关系映射转换为mybatis内部对象注入容器</li>
+</ol>
+<h4 id="mybatis的作用"><a href="#mybatis的作用" class="headerlink" title="mybatis的作用"></a>mybatis的作用</h4><ol>
+<li>简化curd</li>
+<li>乐观锁</li>
+<li>逻辑删除</li>
+<li>代码生成</li>
+<li>高级查询</li>
+<li>数据填充</li>
+</ol>
+<h4 id="动态SQL标签"><a href="#动态SQL标签" class="headerlink" title="动态SQL标签"></a>动态SQL标签</h4><ol>
+<li>if</li>
+<li>where</li>
+<li>foreach</li>
+<li>set</li>
+<li>when</li>
+</ol>
+<h4 id="mybatis的一级缓存和二级缓存"><a href="#mybatis的一级缓存和二级缓存" class="headerlink" title="mybatis的一级缓存和二级缓存"></a>mybatis的一级缓存和二级缓存</h4><p>一级缓存作用域是sqlsession级别的，执行sql查询，第一次查询数据在数据库并写到缓存中，第二次在一级缓存中取</p>
+<p>清空：一般在缓存时执行commit操作一级缓存就会清空，避免脏读</p>
+<p>二级缓存他指的是mybatis中SqlSessionFactory对象缓存</p>
+<h4 id="mybatis如何返回增加时的主键？"><a href="#mybatis如何返回增加时的主键？" class="headerlink" title="mybatis如何返回增加时的主键？"></a>mybatis如何返回增加时的主键？</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">useGeneratedKeys=“true” keyProperty=“对应的主键的对象”</span><br></pre></td></tr></table></figure>
+
+<h4 id="和-的区别"><a href="#和-的区别" class="headerlink" title="#{}和${}的区别"></a>#{}和${}的区别</h4><p>#{}是预编译语句，特点：会主动给String加上单引号，可以很大程度的防止SQL注入</p>
+<p>${}只是单纯的拼接，解析后是什么就是什么，特点：有很大的SQL注入隐患，在order by时可以使用</p>
+<h4 id="分页插件的基本原理"><a href="#分页插件的基本原理" class="headerlink" title="分页插件的基本原理:"></a><strong>分页插件的基本原理:</strong></h4><p>使用Mybatis提供的<strong>插件接口</strong>，实现自定义插件</p>
+<p>在插件的拦截方法内<strong>拦截待执行的SQL，然后重写SQL	limit</strong></p>
+<p>根据方言，添加对应的<strong>物理分页语句</strong>和<strong>物理分页参数</strong></p>
+<h4 id="mybatis-四大核心接口对象"><a href="#mybatis-四大核心接口对象" class="headerlink" title="mybatis 四大核心接口对象"></a>mybatis 四大核心接口对象</h4><ol>
+<li>执行器Executor，执行器负责整个SQL执行过程的总体控制。</li>
+<li>语句处理器StatementHandler，语句处理器负责和JDBC层具体交互，包括prepare语句，执行语句，以及调用ParameterHandler.parameterize()设置参数。</li>
+<li>参数处理器ParameterHandler，参数处理器负责PreparedStatement入参的具体设置。</li>
+<li>结果集处理器ResultSetHandler，结果处理器负责将JDBC查询结果映射到java对象。</li>
+</ol>
+<h1 id="Spring"><a href="#Spring" class="headerlink" title="Spring"></a>Spring</h1><h2 id="概念："><a href="#概念：" class="headerlink" title="概念："></a>概念：</h2><h3 id="Spring："><a href="#Spring：" class="headerlink" title="Spring："></a>Spring：</h3><p>是一个开源框架，可以接管web层，dao层，业务层，持久层的组件，并且可以配置bean，和维护bean与bean之间的关系。核心是IOC（控制反转），AOP（面向切面），是一个分层的轻量级开源框架。</p>
+<h3 id="SpringMVC："><a href="#SpringMVC：" class="headerlink" title="SpringMVC："></a>SpringMVC：</h3><p>SpringMvc是一种web层框架，主要用于代替servlet</p>
+<h3 id="SpringBoot："><a href="#SpringBoot：" class="headerlink" title="SpringBoot："></a>SpringBoot：</h3><p>是spring的拓展，同时延续了spring的和核心ioc，aop，简化了应用的开发和部署。SpringBoot就是为了简化Spring应用的的创建、运行、调试、和部署而出现的。boot提供了很多依赖包，让我们可以做到专注spring的开发，而无需过多关注xml文件</p>
+<h4 id="SpringBoot常见启动器："><a href="#SpringBoot常见启动器：" class="headerlink" title="SpringBoot常见启动器："></a>SpringBoot常见启动器：</h4><p>web、thymeleaf、shiro、security、shiro&amp;thymeleaf、mybatis</p>
+<h4 id="XXL-JOB是什么"><a href="#XXL-JOB是什么" class="headerlink" title="XXL-JOB是什么"></a>XXL-JOB是什么</h4><p>XXL-JOB是一个<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=%E5%88%86%E5%B8%83%E5%BC%8F&spm=1001.2101.3001.7020">分布式</a>任务调度平台，其核心设计目标是开发迅速、学习简单、轻量级、易扩展。现已开放源代码并接入多家公司线上产品线，开箱即用。</p>
+<h3 id="SpringCloud："><a href="#SpringCloud：" class="headerlink" title="SpringCloud："></a>SpringCloud：</h3><p>业界没有统一的定义标准，核心是一站式应用，根据业务区分成一个一个服务，实现彻底耦合，每个服务做每个服务的事情，能够单独启动或销毁，拥有自己独立的数据库</p>
+<h4 id="Spring的核心？"><a href="#Spring的核心？" class="headerlink" title="Spring的核心？"></a>Spring的核心？</h4><p>spring是一个开源框架，<strong>是一个生态，同时是整个生态中的基石</strong></p>
+<p>mvc、boot、cloud…都是以spring为基石来进行开发的，或者说都是在spring上做的延申或者拓展</p>
+<p>自觉维护对象的创建，对象的销毁，交给容器管理我们只需做好配置就可以了</p>
+<h5 id="ioc、aop"><a href="#ioc、aop" class="headerlink" title="ioc、aop"></a>ioc、aop</h5><p>IOC：控制反转（就是把new对象的权利交给容器，所有的对象都被容器控制，这就叫所谓的控制反转。）</p>
+<p>AOP：面向切面编程（做一些与业务无关的公共功能的时候，<strong>通过aop的方式将关键的核心代码切入到业务逻辑里面去</strong>，而不需要去改每一行代码）</p>
+<h3 id="-1"><a href="#-1" class="headerlink" title></a></h3><h4 id="spring中bean的生命周期"><a href="#spring中bean的生命周期" class="headerlink" title="spring中bean的生命周期"></a>spring中bean的生命周期</h4><p>实例化，bean属性填充，初始化bean，销毁bean</p>
+<h4 id="bean的作用域"><a href="#bean的作用域" class="headerlink" title="bean的作用域"></a>bean的作用域</h4><p>session、request、application、singleton、prototype</p>
+<h4 id="Spring的自动装配"><a href="#Spring的自动装配" class="headerlink" title="Spring的自动装配"></a>Spring的自动装配</h4><ol>
+<li><p>xml中的5种自动装配：</p>
+<table>
+<thead>
+<tr>
+<th align="left"><strong>模式</strong></th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">no</td>
+<td>这是默认的设置，它意味着没有自动装配，你应该使用显式的bean引用来连线。你不用为了连线做特殊的事。在依赖注入章节你已经看到这个了。</td>
+</tr>
+<tr>
+<td align="left">byName</td>
+<td></td>
+</tr>
+<tr>
+<td align="left">byType</td>
+<td>由属性数据类型自动装配。Spring 容器看到在 XML 配置文件中 bean 的<em>自动装配</em>的属性设置为 <em>byType</em>。然后如果它的类型匹配配置文件中的一个确切的 bean 名称，它将尝试匹配和连接属性的类型。如果存在不止一个这样的 bean，则一个致命的异常将会被抛出。</td>
+</tr>
+<tr>
+<td align="left">constructor</td>
+<td>类似于 byType，但该类型适用于构造函数参数类型。如果在容器中没有一个构造函数参数类型的 bean，则一个致命错误将会发生。</td>
+</tr>
+<tr>
+<td align="left">autodetect</td>
+<td>Spring首先尝试通过 <em>constructor</em> 使用自动装配来连接，如果它不执行，Spring 尝试通过 <em>byType</em> 来自动装配。</td>
+</tr>
+</tbody></table>
+</li>
+<li><p>基于注解的自动装配</p>
+<ol>
+<li>@Autowired：按照<strong>类型</strong>装配注入的，<strong>它要求依赖对象必须存在</strong></li>
+<li>@Resource：按照<strong>名称</strong>来装配注入的，找不到与名称匹配的bean才会按照类型来配置注入</li>
+</ol>
+</li>
+</ol>
+<h4 id="Spring事务什么时候失效"><a href="#Spring事务什么时候失效" class="headerlink" title="Spring事务什么时候失效"></a>Spring事务什么时候失效</h4><ol>
+<li>数据库不支持事务</li>
+<li>事务方法未被Spring管理</li>
+<li>方法没被public修饰</li>
+<li>同一类中方法调用</li>
+<li>未配置事务管理器</li>
+<li>方法的事务传播类型不支持事务</li>
+<li>不正确的捕获异常</li>
+<li>错误的标注异常类型</li>
+</ol>
+<h2 id="SpringMVC"><a href="#SpringMVC" class="headerlink" title="SpringMVC"></a>SpringMVC</h2><h4 id="SpringMVC-八大注解"><a href="#SpringMVC-八大注解" class="headerlink" title="SpringMVC 八大注解"></a>SpringMVC 八大注解</h4><ol>
+<li>@Controller</li>
+<li>@RequestMapping——映射请求，也就是通过它来指定控制器可以处理哪些URL请求</li>
+<li>@Resource和@Autowired——自动装配</li>
+<li>@ModelAttribute和 @SessionAttributes<ul>
+<li>ModelAttribute：优先执行，可以做初始化操作</li>
+<li>SessionAttributes：应用在Controller上面，可以将Model中的属性同步到session当中。</li>
+</ul>
+</li>
+<li>@PathVariable——接收请求路径中占位符的值</li>
+<li>@requestParam<ul>
+<li><strong>不加@RequestParam注解：</strong>url可以带参数也可以不带。</li>
+<li><strong>加@RequestParam注解：</strong>url必须带参数，</li>
+</ul>
+</li>
+</ol>
+<h4 id="容器创建bean实例的方法"><a href="#容器创建bean实例的方法" class="headerlink" title="容器创建bean实例的方法"></a>容器创建bean实例的方法</h4><ol>
+<li>反射调用构造方法</li>
+<li>静态工厂方法</li>
+<li>实例工厂方法</li>
+<li>FactoryBean</li>
+</ol>
+<h4 id="Collection和Collections的区别"><a href="#Collection和Collections的区别" class="headerlink" title="Collection和Collections的区别"></a>Collection和Collections的区别</h4><p>Collection是一个接口</p>
+<p>Collections是一个集合类，容器的工具类，就如同Array是数组的工具类</p>
+<h4 id="springmvc九大内置组件"><a href="#springmvc九大内置组件" class="headerlink" title="springmvc九大内置组件"></a>springmvc九大内置组件</h4><p>可以看出，初始化策略是其他九个初始化方法的概括，而其他九个初始化方法就是我们今天要介绍的九大组件，主角登场：</p>
+<p>1、MultipartResolver（文件处理器），对应的初始化方法是initMultipartResolver(context)，用于处理上传请求。处理方法是将普通的request包装成MultipartHttpServletRequest，后者可以直接调用getFile方法获取File。</p>
+<p>2、LocaleResolver（当前环境处理器），对应的初始化方法是initLocaleResolver(context)，这就相当于配置数据库的方言一样，有了这个就可以对不同区域的用户显示不同的结果。SpringMVC主要有两个地方用到了Locale：一是ViewResolver视图解析的时候；二是用到国际化资源或者主题的时候。</p>
+<p>3、ThemeResolver（主题处理器），对应的初始化方法是initThemeResolver(context)，用于解析主题。SpringMVC中一个主题对应一个properties文件，里面存放着跟当前主题相关的所有资源，如图片、css样式等。SpringMVC的主题也支持国际化。</p>
+<p>4、HandlerMappings（处理器映射器），对应的初始化方法是initHandlerMappings(context)，这就是根据用户请求的资源uri来查找Handler的。在SpringMVC中会有很多请求，每个请求都需要一个Handler处理，具体接收到一个请求之后使用哪个Handler进行处理呢</p>
+<p>5、HandlerAdapters（处理器适配器），对应的初始化方法是initHandlerAdapters(context)，从名字上看，它就是一个适配器。<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=Servlet&spm=1001.2101.3001.7020">Servlet</a>需要的处理方法的结构却是固定的，都是以request和response为参数的方法。如何让固定的Servlet处理方法调用灵活的Handler来进行处理呢？这就是HandlerAdapters要做的事情。</p>
+<p>6、HandlerExceptionResolvers（异常处理器），对应的初始化方法是initHandlerExceptionResolvers(context)，其它组件都是用来干活的。在干活的过程中难免会出现问题，出问题后怎么办呢？这就要有一个专门的角色对异常情况进行处理，在SpringMVC中就是HandlerExceptionResolver。</p>
+<p>7、RequestToViewNameTranslator（视图名称翻译器），对应的初始化方法是initRequestToViewNameTranslator(context)，有的Handler处理完后并没有设置View也没有设置ViewName，这时就需要从request获取ViewName了，如何从request中获取ViewName就是RequestToViewNameTranslator要做的事情了。</p>
+<p>8、ViewResolvers（页面渲染处理器），对应的初始化方法是initViewResolvers(context)，ViewResolver用来将String类型的视图名和Locale解析为View类型的视图。View是用来渲染页面的，也就是将程序返回的参数填入模板里，生成html（也可能是其它类型）文件。</p>
+<p>9、FlashMapManager（参数传递管理器），对应的初始化方法是initFlashMapManager(context)，用来管理FlashMap的，FlashMap主要用在redirect重定向中传递参数。</p>
+<h1 id="第一次面试"><a href="#第一次面试" class="headerlink" title="第一次面试"></a>第一次面试</h1><h3 id="1-常用HTTP常见的状态码-就讲出两个"><a href="#1-常用HTTP常见的状态码-就讲出两个" class="headerlink" title="1.常用HTTP常见的状态码?就讲出两个"></a>1.常用HTTP常见的状态码?就讲出两个</h3><p><strong>「200 OK」</strong>是最常见的成功状态码</p>
+<p><strong>「204 No Content」</strong>也是常见的成功状态码，但响应头没有 body 数据。</p>
+<p><strong>「301 Moved Permanently」</strong>永久性重定向。</p>
+<p><strong>「302 Found」</strong>临时性重定向。</p>
+<p><strong>「304 Not Modified」</strong>该状态码表示客户端发送附带条件的请求时，服务器端允许请求访问资源，但未满足条件的情况。</p>
+<p><strong>「400 Bad Request」</strong>该状态码表示请求报文中存在语法错误。</p>
+<p><strong>「401 Unauthorized」</strong>该状态码表示发送的请求需要有通过HTTP认证（BASIC认证、DIGEST认证）的认证信息。</p>
+<p><strong>「403 Forbidden」</strong>该状态码表明对请求资源的访问被服务器拒绝了，并不是客户端的请求出错。</p>
+<p><strong>「404 Not Found」</strong> 该状态码表明服务器上无法找到请求的资源。</p>
+<p><strong>「500 Internal Server Error」</strong>该状态码表明服务器端在执行请求时发生了错误。</p>
+<p><strong>「503 Service Unavailable」</strong>该状态码表明服务器暂时处于超负载或正在进行停机维护，现在无法处理请求。</p>
+<h3 id="2-Java支持多继承吗-如果想要实现怎么处理"><a href="#2-Java支持多继承吗-如果想要实现怎么处理" class="headerlink" title="2.Java支持多继承吗?如果想要实现怎么处理?"></a>2.Java支持多继承吗?如果想要实现怎么处理?</h3><p>不支持多继承，可以通过接口实现处理</p>
+<h3 id="3-构造器是否可以被重写或者重载"><a href="#3-构造器是否可以被重写或者重载" class="headerlink" title="3.构造器是否可以被重写或者重载"></a>3.构造器是否可以被重写或者重载</h3><p>构造器是不能被继承的，因为每个类的类名都不相同，而构造器名称与类名相同，所以根本谈不上继承。<br>又由于构造器<strong>不能继承，所以就不能被重写</strong>。但是，<strong>在同一个类中，构造器是可以被重载的。</strong></p>
+<h3 id="4-Java集合类框架的基本接口有哪些"><a href="#4-Java集合类框架的基本接口有哪些" class="headerlink" title="4.Java集合类框架的基本接口有哪些?"></a>4.Java集合类框架的基本接口有哪些?</h3><ul>
+<li>集合类<ul>
+<li>Collection<ul>
+<li>List<ul>
+<li>ArrayList</li>
+<li>LinkedList</li>
+<li>Vector——Stack</li>
+</ul>
+</li>
+<li>Set<ul>
+<li>HashSet</li>
+<li>TreeSet</li>
+<li>LinkedHashSet</li>
+</ul>
+</li>
+<li>Queue</li>
+</ul>
+</li>
+<li>Map<ul>
+<li>HashMap</li>
+<li>TreeMap</li>
+<li>Hashtable</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="5-说一下springmvc的请求流程"><a href="#5-说一下springmvc的请求流程" class="headerlink" title="5.说一下springmvc的请求流程"></a>5.说一下springmvc的请求流程</h3><p>1、DispatcherServlet 接收到客户端发送的请求。</p>
+<p>2、DispatcherServlet 收到请求调用HandlerMapping 处理器映射器。</p>
+<p>3、HandleMapping 根据请求URL 找到对应的handler 以及处理器 拦截器，返回给DispatcherServlet</p>
+<p>4、DispatcherServlet 根据handler 调用HanderAdapter 处理器适配器。</p>
+<p>5、HandlerAdapter 根据handler 执行处理器，也就是我们controller层写的业务逻辑，并返回一个ModeAndView</p>
+<p>6、HandlerAdapter 返回ModeAndView 给DispatcherServlet</p>
+<p>7、DispatcherServlet 调用 ViewResolver 视图解析器来 来解析ModeAndView</p>
+<p>8、ViewResolve 解析ModeAndView 并返回真正的view 给DispatcherServlet</p>
+<p>9、DispatcherServlet 将得到的视图进行渲染，填充到request域中</p>
+<p>10、返回给客户端响应结果。</p>
+<blockquote>
+<p>前端发请求，前端控制器接受请求，处理请求，请求到映射器，寻找映射对象，然后返回控制器，寻找适配器，适配结束，就会映射到controller里面，后端控制返回到ModeAndView，视图进行渲染，最后返回给客户端响应结果，就展现给用户看。</p>
+</blockquote>
+<h3 id="6-yaml和properties的区别"><a href="#6-yaml和properties的区别" class="headerlink" title="6.yaml和properties的区别"></a>6.yaml和properties的区别</h3><p>编写方式不同</p>
+<p>properties优先级更高</p>
+<h3 id="7-springboot的核心注解-里面的子注解是哪些"><a href="#7-springboot的核心注解-里面的子注解是哪些" class="headerlink" title="7.springboot的核心注解,里面的子注解是哪些?"></a>7.springboot的核心注解,里面的子注解是哪些?</h3><p>一、核心注解</p>
+<p><strong>@SpringBootApplication</strong>：主要作用是标记说明这个类是主配置类</p>
+<ol>
+<li><p><strong>@SpringBootConfiguration</strong>：表明配置类，<strong>而配置类也是spring容器中的组件</strong></p>
+<p>组合了 @Configuration 注解，实现配置文件的功能。</p>
+</li>
+<li><p><strong>@EnableAutoConfiguration</strong></p>
+<p>打开自动配置的功能，也可以关闭某个自动配置的选项。</p>
+<p>如关闭数据源自动配置功能： @SpringBootApplication(exclude &#x3D; { DataSourceAutoConfiguration.class })；</p>
+<ul>
+<li><p>@AutoConfigurationPackage</p>
+<ul>
+<li>将主配置类所在的包以及子包里面所有的组件扫描并加载到spring容器中</li>
+</ul>
+</li>
+<li><p>@Import（AutoConfigurationImportSelector.class）</p>
+<ul>
+<li>这个注解就是将需要自动装配的类以全类名的方式返回</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>@ComponentScan</strong></p>
+</li>
+</ol>
+<p>Spring组件扫描功能，让spring Boot<strong>扫描当前以及子包的注解</strong>并把它加入到程序上下文。</p>
+<h4 id="自动装配"><a href="#自动装配" class="headerlink" title="自动装配"></a>自动装配</h4><blockquote>
+<p>springboot的<strong>自动装配</strong>实际上就是为了从<strong>spring.factories</strong>文件中获取到对应的需要进行自动装配的类，并生成相应的Bean对象，然后将它们交给spring容器来帮我们进行管理</p>
+</blockquote>
+<ol>
+<li>创建SpringApplication对象，初始化参数，判断当前<strong>应用程序的类型</strong>以及设置<strong>初始化器</strong>以及<strong>监听器</strong>，加载<strong>spring.factories</strong>文件，将内容放入缓存</li>
+<li>执行run方法，启动过程有两个方法：<ul>
+<li><strong>prepareContext</strong>()：完成的是对上下文对象的初始化操作</li>
+<li><strong>refreshContext</strong>()：会进行整个容器的刷新过程<ul>
+<li>在解析@Import注解的时候，会有一个<strong>getImport</strong>()方法，从主类开始递归解析注解，把所有包含@Import的注解都解析到，然后在<strong>processImport</strong>()方法中对import的类进行分类</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h4 id="启动流程"><a href="#启动流程" class="headerlink" title="启动流程"></a>启动流程</h4><ol>
+<li>会构造一个SpringApplication的实例，构造SpringApplication的时候会进行初始化的工作</li>
+<li>调用run方法，启动SpringApplication</li>
+</ol>
+<h3 id="8-springcloudalibaba中有哪些常见的组件"><a href="#8-springcloudalibaba中有哪些常见的组件" class="headerlink" title="8.springcloudalibaba中有哪些常见的组件"></a>8.springcloudalibaba中有哪些常见的组件</h3><table>
+<thead>
+<tr>
+<th>组件</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>nacos</td>
+<td>注册中心（服务注册与发现）、配置中心（动态配置管理）</td>
+</tr>
+<tr>
+<td>Ribbon</td>
+<td>负载均衡</td>
+</tr>
+<tr>
+<td>Feign</td>
+<td>声明式Http客户端（调用远程服务）</td>
+</tr>
+<tr>
+<td>Sentinel</td>
+<td>服务容错（限流、降级、熔断）</td>
+</tr>
+<tr>
+<td>Gateway</td>
+<td>API网关（webflux编程模式）</td>
+</tr>
+<tr>
+<td>Sleuth</td>
+<td>调用链监控</td>
+</tr>
+<tr>
+<td>Seata</td>
+<td>原Fescar，即分布式事务解决方案</td>
+</tr>
+</tbody></table>
+<h4 id="服务雪崩"><a href="#服务雪崩" class="headerlink" title="服务雪崩"></a>服务雪崩</h4><p>服务雪崩：在整条链路的服务中，一个服务失败，导致整条链路的服务都失败的情形。</p>
+<h4 id="服务限流"><a href="#服务限流" class="headerlink" title="服务限流"></a>服务限流</h4><p>监控应用流量的QPS或并发线程数等指标，当达到指定阈值时对流量进行控制，避免系统被瞬时的流量高峰冲垮，保障应用高可用性。</p>
+<p><strong>实现方式：</strong></p>
+<ol>
+<li><strong>限流实现方式一: 抛出异常的方式定义资源</strong></li>
+<li><strong>限流实现方式二: 注解方式定义资源</strong><ul>
+<li>@SentinelResource</li>
+</ul>
+</li>
+</ol>
+<h4 id="服务熔断"><a href="#服务熔断" class="headerlink" title="服务熔断"></a>服务熔断</h4><p>下游的服务<strong>变得不可用</strong>或<strong>响应过慢</strong>，为了保证可用性，不再继续调用，直接返回</p>
+<h4 id="服务降级"><a href="#服务降级" class="headerlink" title="服务降级"></a>服务降级</h4><p>下游的服务<strong>变得不可用</strong>或<strong>响应过慢</strong>，下游服务主动停掉一些不太重要的服务，释放服务器资源</p>
+<h2 id="RabbitMQ消息确认机制（ACK）"><a href="#RabbitMQ消息确认机制（ACK）" class="headerlink" title="RabbitMQ消息确认机制（ACK）"></a>RabbitMQ消息确认机制（ACK）</h2><h3 id="1、消息确认机制（ACK）"><a href="#1、消息确认机制（ACK）" class="headerlink" title="1、消息确认机制（ACK）"></a>1、消息确认机制（ACK）</h3><p>保证消息从队列可靠的送达到消费者，MQ 提供了消息确认机制，消费者在订阅队列时，可以指定 autoAck 参数，当 autoAck 参数等于 true 时，RabbitMQ 会自动把发送出去的消息置为确认，然后从内存（或者磁盘）中删除，而不管消费者是否真正地消费到了这些消息。</p>
+<h1 id="录-音："><a href="#录-音：" class="headerlink" title="录 音："></a>录 音：</h1><h2 id="速强-匡涛"><a href="#速强-匡涛" class="headerlink" title="速强 匡涛"></a>速强 匡涛</h2><h3 id="模块传参包括哪些？"><a href="#模块传参包括哪些？" class="headerlink" title="模块传参包括哪些？"></a>模块传参包括哪些？</h3><h3 id="单点登录"><a href="#单点登录" class="headerlink" title="单点登录"></a>单点登录</h3><p>认证中心，登陆的话判断用户A有没有携带通行证, 通行证就是Cookie，Session不能依据HTTP连接来判断是否为同一个用户。其实Session是依据Cookie来识别是否是同一个用户。</p>
+<p>总结一下上面的思路：</p>
+<ul>
+<li>用户登录时，验证用户的账户和密码</li>
+<li>生成一个Token保存在数据库中，将Token写到Cookie中</li>
+<li>将用户数据保存在Session中</li>
+<li>请求时都会带上Cookie，检查有没有登录，如果已经登录则放行</li>
+</ul>
+<h4 id="简单介绍es的sql服务"><a href="#简单介绍es的sql服务" class="headerlink" title="简单介绍es的sql服务"></a>简单介绍es的sql服务</h4><h3 id="springboot自动装配机制"><a href="#springboot自动装配机制" class="headerlink" title="springboot自动装配机制"></a>springboot自动装配机制</h3><p>自动装配就是自动地把其他组件中的Bean装载到IOC容器中，不需要开发人员再去配置文件中添加大量的配置，</p>
+<p>添加SptingBootApplication注解，可以开启自动装配</p>
+<p><strong>原理：</strong></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/15078480385zyc/p/16154533.html">https://www.cnblogs.com/15078480385zyc/p/16154533.html</a></p>
+<h3 id="mvc工作流程"><a href="#mvc工作流程" class="headerlink" title="mvc工作流程"></a>mvc工作流程</h3><h3 id="依赖注入有哪些注入方式"><a href="#依赖注入有哪些注入方式" class="headerlink" title="依赖注入有哪些注入方式"></a>依赖注入有哪些注入方式</h3><p><strong>依赖注入有三种方式：</strong></p>
+<p>1：<strong>接口注入</strong>：指的就是在接口中定义要注入的信息，并通过接口完成注入。</p>
+<p>2：<strong>set注入：</strong>指的就是在接受注入的类中定义一个set方法，并在参数中定义需要注入的元素。</p>
+<p>3：<strong>构造注入</strong>：指的就是接受注入的类中定义一个构造方法，并在参数中定义需要注入的元素。</p>
+<h3 id="接口和抽象类有哪些区别"><a href="#接口和抽象类有哪些区别" class="headerlink" title="接口和抽象类有哪些区别"></a>接口和抽象类有哪些区别</h3><p>抽象类是可以继承的，抽象类里面的方法不一定要全部实现</p>
+<h3 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h3><h3 id="重载重写"><a href="#重载重写" class="headerlink" title="重载重写"></a>重载重写</h3><h3 id="简单介绍一下单例模式"><a href="#简单介绍一下单例模式" class="headerlink" title="简单介绍一下单例模式"></a>简单介绍一下单例模式</h3><p><a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F&spm=1001.2101.3001.7020">单例模式</a>是指在<strong>内存中有且只会创建一次对象的设计模式</strong>，在程序中多次使用同一个对象且作用相同的时候，为了防止频繁的创建对象，单例模式可以让程序在内存中创建一个对象，让所有的调用者都共享这一单例对象。单例模式的类型有两种：<strong>懒汉式</strong>和<strong>饿汉式</strong>。</p>
+<ul>
+<li>饿汉式：在类加载的时候已经创建好该单例对象。</li>
+<li>懒汉式：在需要使用对象的时候才会去创建对象</li>
+</ul>
+<h3 id="持续集成—Jenkins"><a href="#持续集成—Jenkins" class="headerlink" title="持续集成—Jenkins"></a>持续集成—Jenkins</h3><p>erk环境</p>
+<h2 id="魔介商务"><a href="#魔介商务" class="headerlink" title="魔介商务"></a>魔介商务</h2><h3 id="string可以被继承嘛？"><a href="#string可以被继承嘛？" class="headerlink" title="string可以被继承嘛？"></a>string可以被继承嘛？</h3><p>不能被继承，因为String类有final修饰符，而final修饰的类是不能被继承的。</p>
+<h3 id="list和set的区别"><a href="#list和set的区别" class="headerlink" title="list和set的区别"></a>list和set的区别</h3><ol>
+<li>List、Set都继承自Collection接口；List的特点：元素有放入顺序，且可重复；Set的特点：元素无放入顺序，且不可重复（注意：元素虽然无放入顺序，但是元素在Set中的位置是由该元素的HashCode决定的，其位置是固定的）。List支持for循环，也就是通过下标来遍历，也可以用迭代器，但是Set只能用迭代器，因为他无序，无法使用下标取值；</li>
+<li>List接口有三个实现类：LinkedList,ArrayList,Vector。Set接口有两个实现类：HashSet（底层由HashMap实现），LinkedHashSet</li>
+<li>Set：检索元素效率低，删除和插入效率高，插入和删除不会引起元素位置改变。List：和数组类似，List可以动态增长，查找元素效率高，插入删除元素效率低，因为会引起其他元素位置改变。</li>
+</ol>
+<h3 id="springmvc的实现流程"><a href="#springmvc的实现流程" class="headerlink" title="springmvc的实现流程"></a>springmvc的实现流程</h3><p>前端发请求，前端控制器接受请求，处理请求，请求到映射器，寻找映射对象，然后返回控制器，寻找适配器，适配结束，就会映射到controller里面，后端控制返回到ModeAndView，视图进行渲染，最后返回给客户端响应结果，就展现给用户看。</p>
+<h3 id="redis的数据类型"><a href="#redis的数据类型" class="headerlink" title="redis的数据类型"></a>redis的数据类型</h3><p><img src="https://pics7.baidu.com/feed/203fb80e7bec54e7336e574b47949e594ec26a1e.png?token=49680a9bf8aa36d95033e817ea1e6517"></p>
+<h2 id="策贸："><a href="#策贸：" class="headerlink" title="策贸："></a>策贸：</h2><h3 id="iocaop"><a href="#iocaop" class="headerlink" title="ioc	aop"></a>ioc	aop</h3><p>ioc，我把对象交给你了，你帮我去控制，创建</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/davidiao/article/details/106486915/">https://blog.csdn.net/davidiao/article/details/106486915/</a></p>
+<h4 id="AOP的作用"><a href="#AOP的作用" class="headerlink" title="AOP的作用"></a>AOP的作用</h4><p>日志记录、性能统计、安全控制、事务处理、异常处理</p>
+<h3 id="aop做切面时，获取目标方法中的参数"><a href="#aop做切面时，获取目标方法中的参数" class="headerlink" title="aop做切面时，获取目标方法中的参数"></a>aop做切面时，获取目标方法中的参数</h3><h3 id="Spring中所使用的设计模式"><a href="#Spring中所使用的设计模式" class="headerlink" title="Spring中所使用的设计模式"></a>Spring中所使用的设计模式</h3><p>（1）工厂模式：Spring使用工厂模式，通过BeanFactory和<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=ApplicationContext&spm=1001.2101.3001.7020">ApplicationContext</a>来创建对象</p>
+<p>（2）<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F&spm=1001.2101.3001.7020">单例模式</a>：Bean默认为单例模式</p>
+<p>（3）策略模式：例如Resource的实现类，针对不同的资源文件，实现了不同方式的资源获取策略</p>
+<p>（4）代理模式：Spring的<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=AOP&spm=1001.2101.3001.7020">AOP</a>功能用到了JDK的动态代理和CGLIB字节码生成技术</p>
+<p>（5）模板方法：可以将相同部分的代码放在父类中，而将不同的代码放入不同的子类中，用来解决代码重复的问题。比如RestTemplate, JmsTemplate, JpaTemplate</p>
+<p>（6）适配器模式：Spring AOP的增强或通知（Advice）使用到了适配器模式，Spring MVC中也是用到了适配器模式适配Controller</p>
+<p>（7）观察者模式：Spring事件驱动模型就是观察者模式的一个经典应用。</p>
+<p>（8）桥接模式：可以根据客户的需求能够动态切换不同的数据源。比如我们的项目需要连接多个数据库，客户在每次访问中根据需要会去访问不同的数据库</p>
+<h3 id="数组去重的三种方法"><a href="#数组去重的三种方法" class="headerlink" title="数组去重的三种方法"></a>数组去重的三种方法</h3><p><strong>一、原生JS去重</strong></p>
+<p><a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=%E6%95%B0%E7%BB%84&spm=1001.2101.3001.7020">数组</a>去重思路：</p>
+<p>1、建立新数组</p>
+<p>2、<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=%E9%81%8D%E5%8E%86&spm=1001.2101.3001.7020">遍历</a>旧数组</p>
+<p>3、往新数组中放置旧数组的元素</p>
+<p>4、遍历新数组</p>
+<p>5、判断如果新数组中有相同的元素，就不往新数组中放了</p>
+<p><strong>三、利用set结构成员值唯一的特点</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var arr = [100, 20, 30, 50, 30, 100, 20, 50];//[100,20,30,50]</span><br><span class="line">var arrSet = new Set(arr);</span><br><span class="line">//arrSet即没有重复元素的数组</span><br></pre></td></tr></table></figure>
+
+<h3 id="数据库的几种去重方法总结"><a href="#数据库的几种去重方法总结" class="headerlink" title="数据库的几种去重方法总结"></a>数据库的几种去重方法总结</h3><p>用group by方法配合Having</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">（1）、查数据</span><br><span class="line"></span><br><span class="line">Select count(num), max(name) from student 列出表中的重复的记录数和学生名字的属性，</span><br><span class="line"></span><br><span class="line">Group by num</span><br><span class="line"></span><br><span class="line">Having count(num)&gt;1 并按照num分组后找出表中num列出现次数大于一次的。</span><br><span class="line"></span><br><span class="line">（2）、删除数据</span><br><span class="line"></span><br><span class="line">Delete from student</span><br><span class="line"></span><br><span class="line">Group by num</span><br><span class="line"></span><br><span class="line">Having count(num)&gt;1</span><br><span class="line"></span><br><span class="line">//删除表中num列所有重复的数据</span><br></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/DFSETHTDFD/article/details/114365791">数据库的几种去重方法总结_Mr.姚先森的博客-CSDN博客_数据库去重</a></p>
+<h3 id="jdbc连接数据库流程"><a href="#jdbc连接数据库流程" class="headerlink" title="jdbc连接数据库流程"></a>jdbc连接数据库流程</h3><p><strong>1.注册驱动：</strong></p>
+<p><code>Class.forName(&quot;com.mysql.jdbc.Driver&quot;);</code>显示的加载到<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=JVM&spm=1001.2101.3001.7020">JVM</a>中</p>
+<p><strong>2.获取连接：</strong></p>
+<p><strong>3.创建一个Statement语句对象</strong></p>
+<p><strong>4.执行SQL语句:</strong></p>
+<p><strong>5.处理结果集：</strong></p>
+<p><strong>6.关闭资源：</strong></p>
+<h3 id="java的数据结构"><a href="#java的数据结构" class="headerlink" title="java的数据结构"></a>java的数据结构</h3><p>arraylist超过初始大小，数据是怎么存储的</p>
+<h3 id="linux基础命令"><a href="#linux基础命令" class="headerlink" title="linux基础命令"></a>linux基础命令</h3><h2 id="面试："><a href="#面试：" class="headerlink" title="面试："></a>面试：</h2><h3 id="什么是死性队列？"><a href="#什么是死性队列？" class="headerlink" title="什么是死性队列？"></a>什么是死性队列？</h3><p>处理死性的队列叫死性队列</p>
+<p>死性：我们这个消息发出去了，但是一直没被消费</p>
+<p><strong>应用场景：</strong>订单超时</p>
+<h3 id="什么是延迟队列？"><a href="#什么是延迟队列？" class="headerlink" title="什么是延迟队列？"></a>什么是延迟队列？</h3><p>进入该队列的消息会被延迟消费的队列。</p>
+<p><strong>应用场景：</strong>延迟消费——过一段时间校验订单的支付状态，未支付则关闭订单</p>
+<h3 id="每五分钟执行一次的表达式怎么写？"><a href="#每五分钟执行一次的表达式怎么写？" class="headerlink" title="每五分钟执行一次的表达式怎么写？"></a>每五分钟执行一次的表达式怎么写？</h3><p>cron：每五分钟执行 *&#x2F;5 * * * *</p>
+<h3 id="dockerfile常见命令"><a href="#dockerfile常见命令" class="headerlink" title="dockerfile常见命令"></a>dockerfile常见命令</h3><ol>
+<li><strong>FROM</strong>：声明镜像</li>
+<li><strong>MAINTAINER</strong>：作者信息+</li>
+<li>**RUN:**运行指定的命令</li>
+<li>**CMD:**执行脚本</li>
+<li><strong>EXPOSE</strong>（expose）：设置暴露端口号</li>
+<li><strong>ENV</strong>：设置环境变量</li>
+<li><strong>ADD</strong>：复制命令</li>
+<li><strong>COPY</strong>：复制命令，部分只能是本地文件</li>
+<li><strong>VLOUME</strong>：设置你的卷</li>
+<li><strong>WORKDIR</strong>：指定容器的工作目录</li>
+</ol>
+<h3 id="路由传参的三种方式"><a href="#路由传参的三种方式" class="headerlink" title="路由传参的三种方式"></a>路由传参的三种方式</h3><p>path加params的方式</p>
+<p>name加query的方式</p>
+<h1 id="没解决"><a href="#没解决" class="headerlink" title="没解决"></a>没解决</h1><h4 id="-2"><a href="#-2" class="headerlink" title></a></h4><p>集合框架</p>
+<p>扩容</p>
+<p>线程 		</p>
+<p>线程池的分类</p>
+<p>七个</p>
+<p>redis</p>
+<p>mq</p>
+<h1 id="笔试"><a href="#笔试" class="headerlink" title="笔试"></a>笔试</h1><p>1，有哪些数据库优化方面的经验?<br>2，请简述常用的索引有哪些种类?<br>3，HAVNG 子句 和 WHERE的异同点?<br>4，如何在Unix和Mysql时间戳之间进行转换？<br>5，Tomcat有几种部署方式？<br>6，redis和memcached什么区别？为什么高并发下有时单线程的redis比多线程的memcached效率要高？<br>7，Redis如何实现延时队列？<br>8，Spring Boot中的监视器是什么？<br>9，如何使用Spring Boot实现异常处理？<br>10，SpringMvc的控制器是不是单例模式,如果是,有什么问题,怎么解决？<br>11，SpingMvc中的控制器的注解一般用那个,有没有别的注解可以替代？<br>12，如果前台有很多个参数传入,并且这些参数都是一个对象的,那么怎么样快速得到这个对象？<br>13，怎么样把ModelMap里面的数据放入Session里面？<br>14，什么是控制反转(IOC)？什么是依赖注入？<br>15，请解释下Spring框架中的IoC？<br>16，简述 AOP 和 IOC 概念<br>17，在 Spring 中如何配置Bean ?<br>18，IOC 容器对 Bean 的生命周期？<br>19，开发中主要使用 Spring 的什么技术 ?<br>20，怎么监视Tomcat的内存使用情况？</p>
+
+        </div>
+        <footer class="article-footer">
+            
+
+    <div class="bdsharebuttonbox">
+    <a href="#" class="bds_more" data-cmd="more">分享到：</a>
+    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间">QQ空间</a>
+    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博">新浪微博</a>
+    <a href="#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博">腾讯微博</a>
+    <a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网">人人网</a>
+    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信">微信</a>
+</div>
+<script>
+window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"16"},"share":{"bdSize":16}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+<style>
+    .bdshare_popup_box {
+        border-radius: 4px;
+        border: #e1e1e1 solid 1px;
+    }
+    .bdshare-button-style0-16 a,
+    .bdshare-button-style0-16 .bds_more {
+        padding-left: 20px;
+        margin: 6px 10px 6px 0;
+    }
+    .bdshare_dialog_list a,
+    .bdshare_popup_list a,
+    .bdshare_popup_bottom a {
+        font-family: 'Microsoft Yahei';
+    }
+    .bdshare_popup_top {
+        display: none;
+    }
+    .bdshare_popup_bottom {
+        height: auto;
+        padding: 5px;
+    }
+</style>
+
+
+
+        </footer>
+    </div>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "author": {
+            "@type": "Person",
+            "name": "小龙Hibernation"
+        },
+        "headline": "面试详解",
+        "image": "https://hibernation0814.github.iohttps://w.wallhaven.cc/full/j3/wallhaven-j3g7yy.jpg",
+        "keywords": "",
+        "genre": "",
+        "datePublished": "2022-08-12",
+        "dateCreated": "2022-08-12",
+        "dateModified": "2022-11-01",
+        "url": "https://hibernation0814.github.io/2022/08/12/面试详解/",
+        "description": "我的面试第一次抽象类应用在哪些方面平时会怎么去使用他
+list和map的区别不说理论，在什么场景上会使用、或者案例
+
+多线程java线程start和run的区别
+
+start() 可以启动一个新线程，run()不能
+start()不能被重复调用，run()可以
+start()中的run代码可以不执行完就继续执行下面的代码，即进行了线程切换。直接调用run方法必须等待其代码全部执行完才能继续执行下面",
+        "wordCount": 1072
+    }
+</script>
+
+</article>
+
+    <section id="comments">
+    
+        
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+
+
+    
+    </section>
+
+
+
+                        </div>
+                    </section>
+                    <aside id="sidebar">
+    <a class="sidebar-toggle" title="Expand Sidebar"><i class="toggle icon"></i></a>
+    <div class="sidebar-top">
+        <p>关注我 :</p>
+        <ul class="social-links">
+            
+                
+                <li>
+                    <a class="social-tooltip" title="twitter" href="/" target="_blank" rel="noopener">
+                        <i class="icon fa fa-twitter"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="facebook" href="/" target="_blank" rel="noopener">
+                        <i class="icon fa fa-facebook"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="stack-overflow" href="/" target="_blank" rel="noopener">
+                        <i class="icon fa fa-stack-overflow"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="github" href="https://github.com/ppoffice/hexo-theme-hueman" target="_blank" rel="noopener">
+                        <i class="icon fa fa-github"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="weibo" href="/" target="_blank" rel="noopener">
+                        <i class="icon fa fa-weibo"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="rss" href="/" target="_blank" rel="noopener">
+                        <i class="icon fa fa-rss"></i>
+                    </a>
+                </li>
+                
+            
+        </ul>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2022/11/01/Experience/" id="article-nav-newer" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">下一篇</strong>
+        <p class="article-nav-title">
+        
+            Experience
+        
+        </p>
+        <i class="icon fa fa-chevron-right" id="icon-chevron-right"></i>
+    </a>
+    
+    
+        <a href="/2022/07/15/%E8%87%AA%E6%88%91%E4%BB%8B%E7%BB%8D/" id="article-nav-older" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">上一篇</strong>
+        <p class="article-nav-title">自我介绍+项目讲解</p>
+        <i class="icon fa fa-chevron-left" id="icon-chevron-left"></i>
+        </a>
+    
+</nav>
+
+    
+    <div class="widgets-container">
+        
+            
+                
+
+            
+                
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2024/12/19/wangxinyun/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://hibernation0814-hexo.oss-cn-hangzhou.aliyuncs.com/img/image-59.png)" alt="零撸网心云宽带共享计划" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"></p>
+                            <p class="item-title"><a href="/2024/12/19/wangxinyun/" class="title">零撸网心云宽带共享计划</a></p>
+                            <p class="item-date"><time datetime="2024-12-19T14:44:10.000Z" itemprop="datePublished">2024-12-19</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2023/12/14/%E9%97%B2%E5%B0%8F%E9%B1%BC/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://hibernation0814-hexo.oss-cn-hangzhou.aliyuncs.com/img/clip_image002.jpg)" alt="闲小鱼" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"></p>
+                            <p class="item-title"><a href="/2023/12/14/%E9%97%B2%E5%B0%8F%E9%B1%BC/" class="title">闲小鱼</a></p>
+                            <p class="item-date"><time datetime="2023-12-14T15:21:02.000Z" itemprop="datePublished">2023-12-14</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2023/04/26/post/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://hibernation0814-hexo.oss-cn-hangzhou.aliyuncs.com/img/image-20230426162727740.png)" alt="post" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"></p>
+                            <p class="item-title"><a href="/2023/04/26/post/" class="title">post</a></p>
+                            <p class="item-date"><time datetime="2023-04-26T07:43:33.000Z" itemprop="datePublished">2023-04-26</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2022/11/01/Experience/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://w.wallhaven.cc/full/e7/wallhaven-e7jj6r.jpg)" alt="Experience" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"></p>
+                            <p class="item-title"><a href="/2022/11/01/Experience/" class="title">Experience</a></p>
+                            <p class="item-date"><time datetime="2022-11-01T07:19:42.000Z" itemprop="datePublished">2022-11-01</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2022/08/12/%E9%9D%A2%E8%AF%95%E8%AF%A6%E8%A7%A3/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://w.wallhaven.cc/full/j3/wallhaven-j3g7yy.jpg)" alt="面试详解" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"></p>
+                            <p class="item-title"><a href="/2022/08/12/%E9%9D%A2%E8%AF%95%E8%AF%A6%E8%A7%A3/" class="title">面试详解</a></p>
+                            <p class="item-date"><time datetime="2022-08-12T00:13:03.000Z" itemprop="datePublished">2022-08-12</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+            
+                
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">归档</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/12/">十二月 2024</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/12/">十二月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/04/">四月 2023</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/11/">十一月 2022</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">八月 2022</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/07/">七月 2022</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/06/">六月 2022</a><span class="archive-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+
+            
+                
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">链接</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_54928486?spm=1018.2226.3001.5343">CSDN</a>
+                    </li>
+                
+                    <li>
+                        <a target="_blank" rel="noopener" href="https://github.com/Hibernation0814/Hibernation0814.github.io">GitHub</a>
+                    </li>
+                
+                    <li>
+                        <a target="_blank" rel="noopener" href="http://hexo.io">Hexo</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+            
+        
+    </div>
+</aside>
+
+                </div>
+            </div>
+        </div>
+        <footer id="footer">
+    <div class="container">
+        <div class="container-inner">
+            <a id="back-to-top" href="javascript:;"><i class="icon fa fa-angle-up"></i></a>
+            <div class="credit">
+                <h1 class="logo-wrap">
+                    <a href="/" class="logo"></a>
+                </h1>
+                <p>&copy; 2024 小龙Hibernation</p>
+                
+                <p>Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="https://github.com/ppoffice" target="_blank">PPOffice</a></p>
+                
+            </div>
+            <div class="footer-plugins">
+              
+    
+
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+    </div>
+    
+    
+    <script>
+    var disqus_shortname = 'hexo-theme-hueman';
+    
+    
+    var disqus_url = 'https://hibernation0814.github.io/2022/08/12/%E9%9D%A2%E8%AF%95%E8%AF%A6%E8%A7%A3/';
+    
+    (function() {
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+    </script>
+
+
+
+
+
+    
+        
+<script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-share.min.js"></script>
+
+        
+<script src="/libs/lightgallery/js/lg-video.min.js"></script>
+
+    
+    
+        
+<script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+
+    
+    
+
+    
+    
+    
+
+
+
+<!-- Custom Scripts -->
+
+<script src="/js/main.js"></script>
+
+
+</body>
+</html>
